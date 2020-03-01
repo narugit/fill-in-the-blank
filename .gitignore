@@ -4,6 +4,7 @@
 # node
 node_modules/
 build/
+dist/
 
 # editor directories and files
 .idea
