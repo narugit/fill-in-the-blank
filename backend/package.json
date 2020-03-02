@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "activate": "source ~/envs/fibenv/bin/activate",
+    "start": "npm run activate && echo 'started index.js...' && node index.js"
   },
   "author": "",
   "license": "ISC",
