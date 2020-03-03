@@ -2,11 +2,13 @@
   <div>
     <h1>{{ msg }}</h1>
     <h3>Q. {{ question.left_item + ' ' + question.operator + ' ? = ' + question.right_item }}</h3>
-    <h3>Your Answer: {{ answer }}</h3>
+    <h3>Your Answer: cnn: {{ answer.cnn }} / nn: {{ answer.nn }}</h3>
     <h3 id="result">
-      Result:
-      <font-awesome-icon id="result_ok" style="display: none;" :icon="['far', 'circle']" />
-      <font-awesome-icon id="result_ng" style="display: none;" :icon="['fas', 'times']" />
+      Result: cnn:
+      <font-awesome-icon id="cnn_result_ok" style="display: none;" :icon="['far', 'circle']" />
+      <font-awesome-icon id="cnn_result_ng" style="display: none;" :icon="['fas', 'times']" />/ nn:
+      <font-awesome-icon id="nn_result_ok" style="display: none;" :icon="['far', 'circle']" />
+      <font-awesome-icon id="nn_result_ng" style="display: none;" :icon="['fas', 'times']" />
     </h3>
 
     <canvas id="canvas" width="420" height="420" style="background: #000000;" @mousedown="draw_activate()" @mousemove="get_current_position($event)" @mouseup="draw_deactivate()"></canvas>
@@ -40,7 +42,10 @@ export default {
       state_sub: 'DrawUnTerminable',
       initial_place: null,
       input_data: 1,
-      answer: null,
+      answer: {
+        cnn: null,
+        nn: null
+      },
       correct_answer: 2
     }
   },
@@ -51,6 +56,7 @@ export default {
     refresh() {
       this.refresh_canvas()
       this.refresh_question()
+      this.refresh_result()
     },
     refresh_canvas() {
       // Canvasを真っ黒にする
@@ -88,6 +94,14 @@ export default {
           break
       }
     },
+    refresh_result() {
+      document.getElementById('cnn_result_ok').style.display = 'none'
+      document.getElementById('cnn_result_ng').style.display = 'none'
+      document.getElementById('nn_result_ok').style.display = 'none'
+      document.getElementById('nn_result_ng').style.display = 'none'
+      this.answer.cnn = null
+      this.answer.nn = null
+    },
     // サーバーから返ってくる値をログに出力したいのでasyncとawaitを行う
     async post() {
       let canvas = document.getElementById('canvas')
@@ -113,19 +127,30 @@ export default {
       }
       console.log(draw_image_pixel_values)
       let response = await Methods.testPosting(draw_image_pixel_values)
-      console.log(typeof response.data.result)
+      console.log(response.data.result)
       /* response.data.resultはstring型で[3]みたいな形で返却されるので、
        * [と]を除去する
        */
-      this.answer = response.data.result.replace(/[\[\]]/g, '')
+      this.answer.cnn = response.data.result.replace(/[\[\(ary\s\)\]]/g, '').split(',')[0]
+      this.answer.nn = response.data.result.replace(/[\[\(ary\s\)\]]/g, '').split(',')[1]
 
-      if (this.correct_answer == this.answer) {
-        document.getElementById('result_ng').style.display = 'none'
-        document.getElementById('result_ok').style.display = ''
+      if (this.correct_answer == this.answer.cnn) {
+        document.getElementById('cnn_result_ng').style.display = 'none'
+        document.getElementById('cnn_result_ok').style.display = ''
         console.log('ok')
       } else {
-        document.getElementById('result_ok').style.display = 'none'
-        document.getElementById('result_ng').style.display = ''
+        document.getElementById('cnn_result_ok').style.display = 'none'
+        document.getElementById('cnn_result_ng').style.display = ''
+        console.log('ng')
+      }
+
+      if (this.correct_answer == this.answer.nn) {
+        document.getElementById('nn_result_ng').style.display = 'none'
+        document.getElementById('nn_result_ok').style.display = ''
+        console.log('ok')
+      } else {
+        document.getElementById('nn_result_ok').style.display = 'none'
+        document.getElementById('nn_result_ng').style.display = ''
         console.log('ng')
       }
     },
@@ -200,10 +225,12 @@ button:hover {
   background-color: #0d2e8f;
   color: white;
 }
-#result_ok {
+#cnn_result_ok,
+#nn_result_ok {
   color: #0dff00;
 }
-#result_ng {
+#cnn_result_ng,
+#nn_result_ng {
   color: #ff1d1dee;
 }
 </style>
