@@ -65,29 +65,35 @@ export default {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
     },
     refresh_question() {
-      // 正解は0-9のいずれか
-      this.correct_answer = Math.floor(Math.random() * (9 - 0) + 0)
       // 演算子は+,-,*,/のいずれか
       let operators = ['+', '-', '*', '/']
       this.question.operator = operators[Math.floor(Math.random() * operators.length)]
 
       switch (this.question.operator) {
         case '+':
+          // 正解は0-9のいずれか
+          this.correct_answer = Math.floor(Math.random() * (9 - 0) + 0)
           this.question.left_item = Math.floor(Math.random() * (100 - 1) + 1)
           this.question.right_item = this.question.left_item + this.correct_answer
           console.log(this.question)
           break
         case '-':
+          // 正解は0-9のいずれか
+          this.correct_answer = Math.floor(Math.random() * (9 - 0) + 0)
           this.question.left_item = Math.floor(Math.random() * (100 - 1) + 1)
           this.question.right_item = this.question.left_item - this.correct_answer
           console.log(this.question)
           break
         case '*':
+          // 正解は0-9のいずれか
+          this.correct_answer = Math.floor(Math.random() * (9 - 0) + 0)
           this.question.left_item = Math.floor(Math.random() * (100 - 1) + 1)
           this.question.right_item = this.question.left_item * this.correct_answer
           console.log(this.question)
           break
         case '/':
+          // 0割りをなくすため、正解は1-9のいずれか
+          this.correct_answer = Math.floor(Math.random() * (9 - 0) + 0)
           this.question.right_item = Math.floor(Math.random() * (100 - 1) + 1)
           this.question.left_item = this.question.right_item * this.correct_answer
           console.log(this.question)
