@@ -4,6 +4,10 @@
 [![Lang: Python](https://img.shields.io/badge/Lang-Python_3.7.6-blue.svg)]()
 
 Let's fill in the blank!
+I use neural network and CNN for preditcion.
+
+## Demo
+![demo](https://github.com/narugit/fill-in-the-blank/blob/master/demo/demo.gif)
 
 ## How to Run
 1. Please setup.
